@@ -159,5 +159,19 @@ var Flower = function(world)
     self.pistil.drawAtOffset(canv,self.x,self.y);
     self.stamen.drawAtOffset(canv,self.x,self.y);
   }
+
+  self.gambleForPollen = function()
+  {
+    if(self.stamen.anther.pollen.length)
+    {
+      if(Math.random() > 0.95)
+      {
+        var p = self.stamen.anther.pollen[self.stamen.anther.pollen.length-1];
+        self.stamen.anther.pollen.splice(self.stamen.anther.pollen.length-1,1);
+        return p;
+      }
+    }
+    return 0;
+  }
 }
 

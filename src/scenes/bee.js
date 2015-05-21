@@ -67,6 +67,12 @@ var Bee = function(world)
     self.y += dy;
   }
 
+  self.doTheDirtyDance = function()
+  {
+    if(p = self.target_flower.gambleForPollen())
+      self.pollen.push(p);
+  }
+
   self.blacklistFlower = function(flower)
   {
     self.blacklist_flowers.push(flower);
@@ -112,6 +118,7 @@ var Bee = function(world)
     }
 
     self.sugar-=0.01;
+    var p;
     switch(self.state)
     {
       case BEE_STATE_IDLE:
@@ -141,12 +148,16 @@ var Bee = function(world)
           self.sugar++;
           self.target_flower.sugar--;
           if(self.sugar >= 100)
+          {
             self.state = BEE_STATE_IDLE;
+            self.doTheDirtyDance();
+          }
         }
         else
         {
           self.blacklistFlower(self.target_flower);
           self.state = BEE_STATE_IDLE;
+          self.doTheDirtyDance();
         }
         break;
       case BEE_STATE_TARGETING_HIVE:
@@ -167,6 +178,8 @@ var Bee = function(world)
   {
     canv.context.strokeStyle = "#666600";
     strokeCirc(canv,self.x,self.y,self.w/2);
+    for(var i = 0; i < self.pollen.length; i++)
+      self.pollen[i].drawAtOffset(canv,self.x,self.y);
   }
 }
 

@@ -1,3 +1,16 @@
+var Sun = function(world)
+{
+  var self = this;
+  self.shine = 0;
+
+  self.t = 0;
+  self.tick = function()
+  {
+    self.t += 0.01;
+    self.shine = (Math.sin(self.t)+1)/2;
+  }
+}
+
 var World = function()
 {
   var self = this;
@@ -6,6 +19,7 @@ var World = function()
   self.bees = [];
   self.hives = [];
   self.wind;
+  self.sun;
 
   self.ready = function(w, h)
   {
@@ -13,10 +27,12 @@ var World = function()
     for(var i = 0; i < 100; i++) self.bees.push(new Bee(self));
     self.hives.push(new Hive(self));
     self.wind = new Wind(self,0,0,w,h);
+    self.sun = new Sun(self);
   };
 
   self.tick = function()
   {
+    self.sun.tick();
     self.wind.tick();
     for(var i = 0; i < self.flowers.length; i++) self.wind.blow(self.flowers[i]);
     for(var i = 0; i < self.bees.length;    i++) self.wind.blow(self.bees[i]);
