@@ -16,7 +16,7 @@ var Gust = function()
 
   var x; var dx;
   var y; var dy;
-  var dstsqrd;
+  var dst;
   var force;
   self.blow = function(obj)
   {
@@ -26,8 +26,9 @@ var Gust = function()
       y = (self.pts[i][1]+self.pts[i+1][1])/2;
       dx = Math.abs(x-obj.x);
       dy = Math.abs(y-obj.y);
-      dstsqrd = dx*dx+dy*dy;
-      force = (self.strength/100)*(1/(dstsqrd/10));
+      dst = Math.sqrt(dx*dx+dy*dy);
+      force = (self.strength/100)*(1/dst);
+      if(force > 0.1) force = 0.1;
       obj.delta[0] += (force * (self.pts[i+1][0]-self.pts[i][0]));
       obj.delta[1] += (force * (self.pts[i+1][1]-self.pts[i][1]));
     }

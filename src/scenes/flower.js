@@ -32,6 +32,8 @@ var Seed = function()
         }
         break;
       case SEED_STATE_IN_AIR:
+        self.vx += self.delta[0]/10;
+        self.vy += self.delta[1]/10;
         self.x += self.vx;
         self.y += self.vy;
         self.vx *= 0.9;
@@ -278,7 +280,7 @@ var Flower = function(world)
       {
         self.seeds[i].delta[0] = self.delta[0];
         self.seeds[i].delta[1] = self.delta[1];
-        self.seeds[i].height = 500;
+        self.seeds[i].height = 5;
         world.seeds.push(self.seeds[i]);
         self.seeds.splice(i,1);
         i--;
