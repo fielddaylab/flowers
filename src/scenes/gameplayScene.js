@@ -3,7 +3,6 @@ var GamePlayScene = function(game, stage)
   var self = this;
 
   var dragger;
-
   var world;
 
   self.ready = function()

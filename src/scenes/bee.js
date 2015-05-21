@@ -13,6 +13,8 @@ var Bee = function(world)
   self.pollen = [];
   self.target_flower;
   self.target_hive;
+  self.known_flowers = [];
+  self.known_hives = [];
   self.blacklist_flowers = [];
   self.blacklist_flowers_life = [];
   self.blacklist_hives = [];
@@ -76,6 +78,15 @@ var Bee = function(world)
     self.blacklist_hives_life.push(100);
   }
 
+  var found;
+  self.mergeToList = function(list,obj)
+  {
+    found = false;
+    for(var i = 0; i < list.length; i++)
+      if(list[i] == obj) found = true;
+    if(!found) list.push(obj);
+  }
+
   self.tick = function()
   {
     for(var i = 0; i < self.blacklist_flowers.length; i++)
@@ -108,7 +119,8 @@ var Bee = function(world)
         self.blown();
         if(self.sugar <= 20)
         {
-          self.target_flower = world.flowerNearest(self,self.blacklist_flowers);
+          self.target_flower = world.flowerNearest(self,self.known_flowers,self.blacklist_flowers,20);
+          self.mergeToList(self.known_flowers,self.target_flower);
           if(self.target_flower) self.state = BEE_STATE_TARGETING_FLOWER;
         }
         break;

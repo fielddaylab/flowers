@@ -46,20 +46,25 @@ var World = function()
   var best;
   var besti;
   var ok;
-  self.thingnearest = function(obj,things,blacklist)
+  self.thingnearest = function(obj,things,known,blacklist,los)
   {
     best = 99999999999;
     besti = -1;
     for(var i = 0; i < things.length; i++)
     {
+      ok = true;
       tmpdst = dstsqrdbtwn(obj,things[i]);
-      if(tmpdst < best)
+      if(tmpdst > los*los)
+      {
+        ok = false;
+        for(var j = 0; j < known.length; j++)
+          if(known[j] == things[i]) ok = true;
+      }
+      if(ok && tmpdst < best)
       {
         ok = true;
         for(var j = 0; j < blacklist.length; j++)
-        {
           if(things[i] == blacklist[j]) ok = false;
-        }
         if(ok)
         {
           best = tmpdst;
@@ -70,17 +75,17 @@ var World = function()
     if(besti >= 0) return things[besti];
     else           return 0;
   }
-  self.hiveNearest = function(obj,blacklist)
+  self.hiveNearest = function(obj,known,blacklist,los)
   {
-    return self.thingnearest(obj,self.hives,blacklist);
+    return self.thingnearest(obj,self.hives,known,blacklist,los);
   }
-  self.flowerNearest = function(obj,blacklist)
+  self.flowerNearest = function(obj,known,blacklist,los)
   {
-    return self.thingnearest(obj,self.flowers,blacklist);
+    return self.thingnearest(obj,self.flowers,known,blacklist,los);
   }
-  self.beeNearest = function(obj,blacklist)
+  self.beeNearest = function(obj,known,blacklist,los)
   {
-    return self.thingnearest(obj,self.bees,blacklist);
+    return self.thingnearest(obj,self.bees,known,blacklist,los);
   }
 };
 
