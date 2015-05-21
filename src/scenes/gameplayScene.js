@@ -24,6 +24,9 @@ var GamePlayScene = function(game, stage)
   {
     dragger.flush();
     wind.tick();
+    for(var i = 0; i < flowers.length; i++) wind.blow(flowers[i]);
+    for(var i = 0; i < bees.length;    i++) wind.blow(bees[i]);
+
     for(var i = 0; i < hives.length;   i++) hives[i].tick();
     for(var i = 0; i < flowers.length; i++) flowers[i].tick();
     for(var i = 0; i < bees.length;    i++) bees[i].tick();

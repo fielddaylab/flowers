@@ -142,6 +142,8 @@ var Flower = function()
   self.h = self.w;
   self.color = "#FF0000";
 
+  self.delta = [0,0];
+
   self.tick = function()
   {
 

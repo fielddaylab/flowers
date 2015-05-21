@@ -7,6 +7,8 @@ var Bee = function()
   self.w = 6;
   self.h = self.w;
 
+  self.delta = [0,0];
+
   self.tick = function()
   {
     var x = Math.floor(Math.random()*4)
@@ -18,6 +20,10 @@ var Bee = function()
       case 3: self.y--; break;
       default: break;
     }
+    self.x += self.delta[0];
+    self.y += self.delta[1];
+    self.delta[0] = 0;
+    self.delta[1] = 0;
   }
 
   self.draw = function(canv)

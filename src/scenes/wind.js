@@ -14,6 +14,25 @@ var Gust = function()
     return self.pts[self.pts.length-1];
   }
 
+  var x; var dx;
+  var y; var dy;
+  var dstsqrd;
+  var force;
+  self.blow = function(obj)
+  {
+    for(var i = 0; i < self.pts.length-1; i++)
+    {
+      x = (self.pts[i][0]+self.pts[i+1][0])/2;
+      y = (self.pts[i][1]+self.pts[i+1][1])/2;
+      dx = Math.abs(x-obj.x);
+      dy = Math.abs(y-obj.y);
+      dstsqrd = dx*dx+dy*dy;
+      force = (self.strength/100)*(1/(dstsqrd/10));
+      obj.delta[0] += (force * (self.pts[i+1][0]-self.pts[i][0]));
+      obj.delta[1] += (force * (self.pts[i+1][1]-self.pts[i][1]));
+    }
+  }
+
   self.tick = function()
   {
     self.strength--;
@@ -47,13 +66,25 @@ var Wind = function(x,y,w,h)
   self.tick = function()
   {
     for(var i = 0; i < self.gusts.length; i++)
-      self.gusts[i].tick();
+    {
+      if(!self.gusts[i].tick())
+      {
+        self.gusts.splice(i,1);
+        i--;
+      }
+    }
   }
 
   self.draw = function(canv)
   {
     for(var i = 0; i < self.gusts.length; i++)
       self.gusts[i].draw(canv);
+  }
+
+  self.blow = function(obj)
+  {
+    for(var i = 0; i < self.gusts.length; i++)
+      self.gusts[i].blow(obj);
   }
 
   self.dragging = false;
