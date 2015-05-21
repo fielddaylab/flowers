@@ -45,38 +45,42 @@ var World = function()
   var tmpdst;
   var best;
   var besti;
-  self.hiveNearest = function(obj)
+  var ok;
+  self.thingnearest = function(obj,things,blacklist)
   {
     best = 99999999999;
-    besti = 0;
-    for(var i = 0; i < self.hives.length; i++)
+    besti = -1;
+    for(var i = 0; i < things.length; i++)
     {
-      tmpdst = dstsqrdbtwn(obj,self.hives[i]);
-      if(tmpdst < best) { best = tmpdst; besti = i; }
+      tmpdst = dstsqrdbtwn(obj,things[i]);
+      if(tmpdst < best)
+      {
+        ok = true;
+        for(var j = 0; j < blacklist.length; j++)
+        {
+          if(things[i] == blacklist[j]) ok = false;
+        }
+        if(ok)
+        {
+          best = tmpdst;
+          besti = i;
+        }
+      }
     }
-    return self.hives[besti];
+    if(besti >= 0) return things[besti];
+    else           return 0;
   }
-  self.flowerNearest = function(obj)
+  self.hiveNearest = function(obj,blacklist)
   {
-    best = 99999999999;
-    besti = 0;
-    for(var i = 0; i < self.flowers.length; i++)
-    {
-      tmpdst = dstsqrdbtwn(obj,self.flowers[i]);
-      if(tmpdst < best) { best = tmpdst; besti = i; }
-    }
-    return self.flowers[besti];
+    return self.thingnearest(obj,self.hives,blacklist);
   }
-  self.beeNearest = function(obj)
+  self.flowerNearest = function(obj,blacklist)
   {
-    best = 99999999999;
-    besti = 0;
-    for(var i = 0; i < self.bees.length; i++)
-    {
-      tmpdst = dstsqrdbtwn(obj,self.bees[i]);
-      if(tmpdst < best) { best = tmpdst; besti = i; }
-    }
-    return self.bees[besti];
+    return self.thingnearest(obj,self.flowers,blacklist);
+  }
+  self.beeNearest = function(obj,blacklist)
+  {
+    return self.thingnearest(obj,self.bees,blacklist);
   }
 };
 

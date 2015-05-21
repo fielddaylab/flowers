@@ -13,6 +13,10 @@ var Bee = function(world)
   self.pollen = [];
   self.target_flower;
   self.target_hive;
+  self.blacklist_flowers = [];
+  self.blacklist_flowers_life = [];
+  self.blacklist_hives = [];
+  self.blacklist_hives_life = [];
 
   var BEE_STATE_COUNT = 0;
   var BEE_STATE_IDLE             = BEE_STATE_COUNT; BEE_STATE_COUNT++;
@@ -44,6 +48,12 @@ var Bee = function(world)
   var dx;
   var dy;
   var l;
+  self.distTo = function(target)
+  {
+    dx = target.x - self.x;
+    dy = target.y - self.y;
+    return dx*dx+dy*dy;
+  }
   self.buzzTo = function(target)
   {
     dx = target.x - self.x;
@@ -55,44 +65,90 @@ var Bee = function(world)
     self.y += dy;
   }
 
+  self.blacklistFlower = function(flower)
+  {
+    self.blacklist_flowers.push(flower);
+    self.blacklist_flowers_life.push(1000);
+  }
+  self.blacklistHive = function(hive)
+  {
+    self.blacklist_hives.push(hive);
+    self.blacklist_hives_life.push(100);
+  }
+
   self.tick = function()
   {
+    for(var i = 0; i < self.blacklist_flowers.length; i++)
+    {
+      self.blacklist_flowers_life[i]--;
+      if(self.blacklist_flowers_life[i] <= 0)
+      {
+        self.blacklist_flowers.splice(i,1);
+        self.blacklist_flowers_life.splice(i,1);
+        i--;
+      }
+    }
+
+    for(var i = 0; i < self.blacklist_hives.length; i++)
+    {
+      self.blacklist_hives_life[i]--;
+      if(self.blacklist_hives_life[i] <= 0)
+      {
+        self.blacklist_hives.splice(i,1);
+        self.blacklist_hives_life.splice(i,1);
+        i--;
+      }
+    }
+
+    self.sugar-=0.01;
     switch(self.state)
     {
       case BEE_STATE_IDLE:
-        self.sugar-=0.01;
         self.jiggle();
         self.blown();
         if(self.sugar <= 20)
         {
-          self.state = BEE_STATE_TARGETING_FLOWER;
-          self.target_flower = world.flowerNearest(self);
+          self.target_flower = world.flowerNearest(self,self.blacklist_flowers);
+          if(self.target_flower) self.state = BEE_STATE_TARGETING_FLOWER;
         }
         break;
       case BEE_STATE_TARGETING_FLOWER:
-        self.sugar-=0.01;
         self.buzzTo(self.target_flower);
         self.jiggle();
         self.blown();
+        if(self.distTo(self.target_flower) < 25)
+        {
+          self.x = self.target_flower.x;
+          self.y = self.target_flower.y;
+          self.state = BEE_STATE_EATING;
+        }
         break;
       case BEE_STATE_EATING:
-        self.sugar-=0.01;
-        self.sugar++;
-        self.target_flower.sugar--;
+        if(self.target_flower.sugar > 0)
+        {
+          self.sugar++;
+          self.target_flower.sugar--;
+          if(self.sugar >= 100)
+            self.state = BEE_STATE_IDLE;
+        }
+        else
+        {
+          self.blacklistFlower(self.target_flower);
+          self.state = BEE_STATE_IDLE;
+        }
         break;
       case BEE_STATE_TARGETING_HIVE:
-        self.sugar-=0.01;
         self.buzzTo(self.target_hive);
         self.jiggle();
         self.blown();
         break;
       case BEE_STATE_SLEEPING:
-        self.sugar-=0.01;
         break;
       default: break;
     }
     self.delta[0] = 0;
     self.delta[1] = 0;
+    if(self.sugar < 0) self.sugar = 0;
   }
 
   self.draw = function(canv)
