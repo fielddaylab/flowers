@@ -8,6 +8,7 @@ var Bee = function(world)
   self.h = self.w;
 
   self.delta = [0,0];
+  self.lightness = 0.5+Math.random();
 
   self.sugar = 0;
   self.pollen = [];
@@ -43,8 +44,8 @@ var Bee = function(world)
 
   self.blown = function()
   {
-    self.x += self.delta[0];
-    self.y += self.delta[1];
+    self.x += self.delta[0]*self.lightness;
+    self.y += self.delta[1]*self.lightness;
   }
 
   var dx;

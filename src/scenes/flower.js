@@ -8,6 +8,7 @@ var Seed = function()
   self.color = "#994411";
 
   self.delta = [0,0];
+  self.lightness = 0.5+Math.random();
 
   self.vx = 0;
   self.vy = 0;
@@ -32,8 +33,8 @@ var Seed = function()
         }
         break;
       case SEED_STATE_IN_AIR:
-        self.vx += self.delta[0]/10;
-        self.vy += self.delta[1]/10;
+        self.vx += (self.delta[0]/10)*self.lightness;
+        self.vy += (self.delta[1]/10)*self.lightness;
         self.x += self.vx;
         self.y += self.vy;
         self.vx *= 0.9;
