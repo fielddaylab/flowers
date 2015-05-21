@@ -67,8 +67,15 @@ var Bee = function(world)
     self.y += dy;
   }
 
+  var p;
   self.doTheDirtyDance = function()
   {
+    if(self.pollen.length && Math.random() > 0.5)
+    {
+      p = self.pollen[self.pollen.length-1];
+      self.pollen.splice(self.pollen.length-1,1);
+      self.target_flower.takePollen(p);
+    }
     if(p = self.target_flower.gambleForPollen())
       self.pollen.push(p);
   }
@@ -118,7 +125,6 @@ var Bee = function(world)
     }
 
     self.sugar-=0.01;
-    var p;
     switch(self.state)
     {
       case BEE_STATE_IDLE:

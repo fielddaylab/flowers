@@ -9,6 +9,10 @@ var Pollen = function()
   self.h = self.w;
   self.color = "#000000";
 
+  self.tick = function()
+  {
+  }
+
   self.drawAtOffset = function(canv, x, y)
   {
     canv.context.strokeStyle = self.color;
@@ -25,6 +29,10 @@ var Anther = function(stamen)
   self.w = 20;
   self.h = self.w;
   self.color = "#FFFFFF";
+
+  self.tick = function()
+  {
+  }
 
   self.drawAtOffset = function(canv, x, y)
   {
@@ -45,6 +53,10 @@ var Stamen = function(flower)
   self.h = self.w;
   self.color = "#00FFFF";
 
+  self.tick = function()
+  {
+  }
+
   self.drawAtOffset = function(canv, x, y)
   {
     canv.context.strokeStyle = self.color;
@@ -64,6 +76,10 @@ var Ovule = function()
   self.h = self.w;
   self.color = "#FF00FF";
 
+  self.tick = function()
+  {
+  }
+
   self.drawAtOffset = function(canv, x, y)
   {
     canv.context.strokeStyle = self.color;
@@ -74,6 +90,7 @@ var Stigma = function(pistil)
 {
   var self = this;
   self.pollen = [];
+  self.pollen_life = [];
 
   self.x = Math.random()*10-5;
   self.y = Math.random()*10-5;
@@ -81,12 +98,31 @@ var Stigma = function(pistil)
   self.h = self.w;
   self.color = "#0000FF";
 
+  self.tick = function()
+  {
+    for(var i = 0; i < self.pollen.length; i++)
+    {
+      self.pollen_life[i]--;
+      if(self.pollen_life[i] < 0)
+      {
+        self.pollen.splice(i,1);
+        self.pollen_life.splice(i,1);
+        i--;
+      }
+    }
+  }
+
   self.drawAtOffset = function(canv, x, y)
   {
     canv.context.strokeStyle = self.color;
     strokeCirc(canv,self.x+x,self.y+y,self.w/2);
     for(var i = 0; i < self.pollen.length; i++)
-      self.pollen[i].drawAtOffset(canv, self.x+x, self.y+y);
+    {
+      self.pollen[i].drawAtOffset(canv,
+        self.x+((self.pollen_life[i]/100)*(pistil.ovary.x-self.x))+x,
+        self.y+((self.pollen_life[i]/100)*(pistil.ovary.y-self.y))+y
+      );
+    }
   }
 }
 var Ovary = function(pistil)
@@ -100,6 +136,10 @@ var Ovary = function(pistil)
   self.h = self.w;
   self.color = "#FFFF00";
 
+  self.tick = function()
+  {
+  }
+
   self.drawAtOffset = function(canv, x, y)
   {
     canv.context.strokeStyle = self.color;
@@ -111,14 +151,20 @@ var Ovary = function(pistil)
 var Pistil = function(flower)
 {
   var self = this;
-  self.ovary = new Ovary();
-  self.stigma = new Stigma();
+  self.ovary = new Ovary(self);
+  self.stigma = new Stigma(self);
 
   self.x = Math.random()*10-5;
   self.y = Math.random()*10-5;
   self.w = 40;
   self.h = self.w;
   self.color = "#00FF00";
+
+  self.tick = function()
+  {
+    self.ovary.tick();
+    self.stigma.tick();
+  }
 
   self.drawAtOffset = function(canv, x, y)
   {
@@ -149,7 +195,8 @@ var Flower = function(world)
 
   self.tick = function()
   {
-
+    self.pistil.tick();
+    self.stamen.tick();
   }
 
   self.draw = function(canv)
@@ -172,6 +219,11 @@ var Flower = function(world)
       }
     }
     return 0;
+  }
+  self.takePollen = function(p)
+  {
+    self.pistil.stigma.pollen.push(p);
+    self.pistil.stigma.pollen_life.push(100);
   }
 }
 
