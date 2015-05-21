@@ -18,6 +18,7 @@ var World = function()
   self.flowers = [];
   self.bees = [];
   self.hives = [];
+  self.seeds = [];
   self.wind;
   self.sun;
 
@@ -36,10 +37,12 @@ var World = function()
     self.wind.tick();
     for(var i = 0; i < self.flowers.length; i++) self.wind.blow(self.flowers[i]);
     for(var i = 0; i < self.bees.length;    i++) self.wind.blow(self.bees[i]);
+    for(var i = 0; i < self.seeds.length;   i++) self.wind.blow(self.seeds[i]);
 
     for(var i = 0; i < self.hives.length;   i++) self.hives[i].tick();
     for(var i = 0; i < self.flowers.length; i++) self.flowers[i].tick();
     for(var i = 0; i < self.bees.length;    i++) self.bees[i].tick();
+    for(var i = 0; i < self.seeds.length;   i++) self.seeds[i].tick();
   };
 
   self.draw = function(canv)
@@ -48,6 +51,7 @@ var World = function()
     for(var i = 0; i < self.hives.length;   i++) self.hives[i].draw(canv);
     for(var i = 0; i < self.flowers.length; i++) self.flowers[i].draw(canv);
     for(var i = 0; i < self.bees.length;    i++) self.bees[i].draw(canv);
+    for(var i = 0; i < self.seeds.length;   i++) self.seeds[i].draw(canv);
   };
 
   var x;
