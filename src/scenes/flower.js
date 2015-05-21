@@ -6,8 +6,8 @@ var Pollen = function()
   self.x = Math.random()*10-5;
   self.y = Math.random()*10-5;
   self.w = 8;
-  self.h = 0;
-  self.color = "#F0F0F0";
+  self.h = self.w;
+  self.color = "#000000";
 
   self.drawAtOffset = function(canv, x, y)
   {
@@ -23,7 +23,7 @@ var Anther = function(stamen)
   self.x = Math.random()*10-5;
   self.y = Math.random()*10-5;
   self.w = 20;
-  self.h = 0;
+  self.h = self.w;
   self.color = "#FFFFFF";
 
   self.drawAtOffset = function(canv, x, y)
@@ -42,7 +42,7 @@ var Stamen = function(flower)
   self.x = Math.random()*10-5;
   self.y = Math.random()*10-5;
   self.w = 30;
-  self.h = 0;
+  self.h = self.w;
   self.color = "#00FFFF";
 
   self.drawAtOffset = function(canv, x, y)
@@ -61,7 +61,7 @@ var Ovule = function()
   self.x = Math.random()*10-5;
   self.y = Math.random()*10-5;
   self.w = 10;
-  self.h = 0;
+  self.h = self.w;
   self.color = "#FF00FF";
 
   self.drawAtOffset = function(canv, x, y)
@@ -73,17 +73,20 @@ var Ovule = function()
 var Stigma = function(pistil)
 {
   var self = this;
+  self.pollen = [];
 
   self.x = Math.random()*10-5;
   self.y = Math.random()*10-5;
   self.w = 20;
-  self.h = 0;
+  self.h = self.w;
   self.color = "#0000FF";
 
   self.drawAtOffset = function(canv, x, y)
   {
     canv.context.strokeStyle = self.color;
     strokeCirc(canv,self.x+x,self.y+y,self.w/2);
+    for(var i = 0; i < self.pollen.length; i++)
+      self.pollen[i].drawAtOffset(canv, self.x+x, self.y+y);
   }
 }
 var Ovary = function(pistil)
@@ -94,7 +97,7 @@ var Ovary = function(pistil)
   self.x = Math.random()*10-5;
   self.y = Math.random()*10-5;
   self.w = 30;
-  self.h = 0;
+  self.h = self.w;
   self.color = "#FFFF00";
 
   self.drawAtOffset = function(canv, x, y)
@@ -114,7 +117,7 @@ var Pistil = function(flower)
   self.x = Math.random()*10-5;
   self.y = Math.random()*10-5;
   self.w = 40;
-  self.h = 0;
+  self.h = self.w;
   self.color = "#00FF00";
 
   self.drawAtOffset = function(canv, x, y)
@@ -136,8 +139,13 @@ var Flower = function()
   self.x = 100;
   self.y = 100;
   self.w = 50;
-  self.h = 0;
+  self.h = self.w;
   self.color = "#FF0000";
+
+  self.tick = function()
+  {
+
+  }
 
   self.draw = function(canv)
   {
