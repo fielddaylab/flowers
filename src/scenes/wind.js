@@ -53,7 +53,7 @@ var Gust = function()
   }
 }
 
-var Wind = function(x,y,w,h)
+var Wind = function(world,x,y,w,h)
 {
   var self = this;
   self.x = x;

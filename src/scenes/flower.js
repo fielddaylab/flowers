@@ -130,7 +130,7 @@ var Pistil = function(flower)
   }
 }
 
-var Flower = function()
+var Flower = function(world)
 {
   var self = this;
   self.pistil = new Pistil(self);
@@ -143,6 +143,9 @@ var Flower = function()
   self.color = "#FF0000";
 
   self.delta = [0,0];
+
+  self.sugar = 0;
+  self.sunlight = 0;
 
   self.tick = function()
   {

@@ -1,4 +1,4 @@
-var Bee = function()
+var Bee = function(world)
 {
   var self = this;
 
@@ -9,10 +9,23 @@ var Bee = function()
 
   self.delta = [0,0];
 
-  self.tick = function()
+  self.sugar = 0;
+  self.pollen = [];
+  self.target_flower;
+  self.target_hive;
+
+  var BEE_STATE_COUNT = 0;
+  var BEE_STATE_IDLE             = BEE_STATE_COUNT; BEE_STATE_COUNT++;
+  var BEE_STATE_TARGETING_FLOWER = BEE_STATE_COUNT; BEE_STATE_COUNT++;
+  var BEE_STATE_EATING           = BEE_STATE_COUNT; BEE_STATE_COUNT++;
+  var BEE_STATE_TARGETING_HIVE   = BEE_STATE_COUNT; BEE_STATE_COUNT++;
+  var BEE_STATE_SLEEPING         = BEE_STATE_COUNT; BEE_STATE_COUNT++;
+  self.state = BEE_STATE_IDLE;
+
+  self.jiggle = function()
   {
-    var x = Math.floor(Math.random()*4)
-    switch(x)
+    var r = Math.floor(Math.random()*4)
+    switch(r)
     {
       case 0: self.x++; break;
       case 1: self.x--; break;
@@ -20,8 +33,63 @@ var Bee = function()
       case 3: self.y--; break;
       default: break;
     }
+  }
+
+  self.blown = function()
+  {
     self.x += self.delta[0];
     self.y += self.delta[1];
+  }
+
+  var dx;
+  var dy;
+  var l;
+  self.buzzTo = function(target)
+  {
+    dx = target.x - self.x;
+    dy = target.y - self.y;
+    l = Math.sqrt(dx*dx+dy*dy);
+    dx /= l;
+    dy /= l;
+    self.x += dx;
+    self.y += dx;
+  }
+
+  self.tick = function()
+  {
+    switch(self.state)
+    {
+      case BEE_STATE_IDLE:
+        self.sugar-=0.01;
+        self.jiggle();
+        self.blown();
+        if(self.sugar <= 20)
+        {
+          self.state = BEE_STATE_TARGETING_FLOWER;
+        }
+        break;
+      case BEE_STATE_TARGETING_FLOWER:
+        self.sugar-=0.01;
+        //self.buzzTo(self.target_flower);
+        self.jiggle();
+        self.blown();
+        break;
+      case BEE_STATE_EATING:
+        self.sugar-=0.01;
+        self.sugar++;
+        self.target_flower.sugar--;
+        break;
+      case BEE_STATE_TARGETING_HIVE:
+        self.sugar-=0.01;
+        self.buzzTo(self.target_hive);
+        self.jiggle();
+        self.blown();
+        break;
+      case BEE_STATE_SLEEPING:
+        self.sugar-=0.01;
+        break;
+      default: break;
+    }
     self.delta[0] = 0;
     self.delta[1] = 0;
   }
@@ -33,7 +101,7 @@ var Bee = function()
   }
 }
 
-var Hive = function()
+var Hive = function(world)
 {
   var self = this;
 

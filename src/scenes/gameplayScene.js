@@ -4,40 +4,62 @@ var GamePlayScene = function(game, stage)
 
   var dragger;
 
-  var flowers = [];
-  var bees = [];
-  var hives = [];
-  var wind;
+  var World = function()
+  {
+    var self = this;
+
+    self.flowers = [];
+    self.bees = [];
+    self.hives = [];
+    self.wind;
+
+    self.ready = function()
+    {
+      self.flowers.push(new Flower(self));
+      for(var i = 0; i < 100; i++) self.bees.push(new Bee(self));
+      self.hives.push(new Hive(self));
+      self.wind = new Wind(self,0,0,stage.dispCanv.canvas.width,stage.dispCanv.canvas.height);
+    };
+
+    self.tick = function()
+    {
+      self.wind.tick();
+      for(var i = 0; i < self.flowers.length; i++) self.wind.blow(self.flowers[i]);
+      for(var i = 0; i < self.bees.length;    i++) self.wind.blow(self.bees[i]);
+
+      for(var i = 0; i < self.hives.length;   i++) self.hives[i].tick();
+      for(var i = 0; i < self.flowers.length; i++) self.flowers[i].tick();
+      for(var i = 0; i < self.bees.length;    i++) self.bees[i].tick();
+    };
+
+    self.draw = function(canv)
+    {
+      self.wind.draw(canv);
+      for(var i = 0; i < self.hives.length;   i++) self.hives[i].draw(canv);
+      for(var i = 0; i < self.flowers.length; i++) self.flowers[i].draw(canv);
+      for(var i = 0; i < self.bees.length;    i++) self.bees[i].draw(canv);
+    };
+  };
+
+  var world;
 
   self.ready = function()
   {
     dragger = new Dragger({source:stage.dispCanv.canvas});
-
-    flowers.push(new Flower());
-    for(var i = 0; i < 100; i++) bees.push(new Bee());
-    hives.push(new Hive());
-    wind = new Wind(0,0,stage.dispCanv.canvas.width,stage.dispCanv.canvas.height);
-    dragger.register(wind);
+    world = new World();
+    world.ready();
+    dragger.register(world.wind);
   };
 
   self.tick = function()
   {
     dragger.flush();
-    wind.tick();
-    for(var i = 0; i < flowers.length; i++) wind.blow(flowers[i]);
-    for(var i = 0; i < bees.length;    i++) wind.blow(bees[i]);
-
-    for(var i = 0; i < hives.length;   i++) hives[i].tick();
-    for(var i = 0; i < flowers.length; i++) flowers[i].tick();
-    for(var i = 0; i < bees.length;    i++) bees[i].tick();
+    world.tick();
   };
 
   self.draw = function()
   {
-    wind.draw(stage.drawCanv);
-    for(var i = 0; i < hives.length;   i++) hives[i].draw(stage.drawCanv);
-    for(var i = 0; i < flowers.length; i++) flowers[i].draw(stage.drawCanv);
-    for(var i = 0; i < bees.length;    i++) bees[i].draw(stage.drawCanv);
+    world.draw(stage.drawCanv);
   };
 
   self.cleanup = function()
