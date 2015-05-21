@@ -52,7 +52,7 @@ var Bee = function(world)
     dx /= l;
     dy /= l;
     self.x += dx;
-    self.y += dx;
+    self.y += dy;
   }
 
   self.tick = function()
@@ -66,11 +66,12 @@ var Bee = function(world)
         if(self.sugar <= 20)
         {
           self.state = BEE_STATE_TARGETING_FLOWER;
+          self.target_flower = world.flowerNearest(self);
         }
         break;
       case BEE_STATE_TARGETING_FLOWER:
         self.sugar-=0.01;
-        //self.buzzTo(self.target_flower);
+        self.buzzTo(self.target_flower);
         self.jiggle();
         self.blown();
         break;
