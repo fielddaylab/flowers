@@ -140,14 +140,20 @@ var Bee = function(world,home,x,y)
         if(self.sugar <= 20)
         {
           self.target_flower = world.flowerNearest(self,self.known_flowers,self.blacklist_flowers,40);
-          self.mergeToList(self.known_flowers,self.target_flower);
-          if(self.target_flower) self.state = BEE_STATE_TARGETING_FLOWER;
+          if(self.target_flower)
+          {
+            self.mergeToList(self.known_flowers,self.target_flower);
+            self.state = BEE_STATE_TARGETING_FLOWER;
+          }
         }
         if(self.sugar >= 100)
         {
           self.target_hive = world.hiveNearest(self,self.known_hives,self.blacklist_hives,40);
-          self.mergeToList(self.known_hives,self.target_hive);
-          if(self.target_hive) self.state = BEE_STATE_TARGETING_HIVE;
+          if(self.target_hive)
+          {
+            self.mergeToList(self.known_hives,self.target_hive);
+            self.state = BEE_STATE_TARGETING_HIVE;
+          }
         }
         break;
       case BEE_STATE_TARGETING_FLOWER:
@@ -159,6 +165,11 @@ var Bee = function(world,home,x,y)
           self.x = self.target_flower.x;
           self.y = self.target_flower.y;
           self.state = BEE_STATE_EATING;
+        }
+        else if(self.distTo(self.target_flower) > 100)
+        {
+          if(world.flowerNearest(self,self.known_flowers,self.blacklist_flowers,40) != self.target_flower);
+          self.state = BEE_STATE_IDLE; //let idle find the new one
         }
         break;
       case BEE_STATE_EATING:
