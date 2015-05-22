@@ -7,7 +7,8 @@ var Bee = function(world)
   self.w = 6;
   self.h = self.w;
 
-  self.delta = [0,0];
+  self.blow_x = 0;
+  self.blow_y = 0;
   self.lightness = 0.5+Math.random();
 
   self.sugar = 0;
@@ -42,10 +43,15 @@ var Bee = function(world)
     }
   }
 
+  self.blow = function(x,y)
+  {
+    self.blow_x += x;
+    self.blow_y += y;
+  }
   self.blown = function()
   {
-    self.x += self.delta[0]*self.lightness;
-    self.y += self.delta[1]*self.lightness;
+    self.x += self.blow_x*self.lightness;
+    self.y += self.blow_y*self.lightness;
   }
 
   var dx;
@@ -176,8 +182,8 @@ var Bee = function(world)
         break;
       default: break;
     }
-    self.delta[0] = 0;
-    self.delta[1] = 0;
+    self.blow_x = 0;
+    self.blow_y = 0;
     if(self.sugar < 0) self.sugar = 0;
   }
 
