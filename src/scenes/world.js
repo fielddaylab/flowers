@@ -65,7 +65,7 @@ var World = function()
 
   self.ready = function(w, h)
   {
-    self.flowers.push(new Flower(self,100,100));
+    self.flowers.push(new Flower(self,100,100)); self.flowers[0].freebee = true;
     self.hives.push(new Hive(self,300,150));
     self.wind = new Wind(self,0,0,w,h);
     self.sun = new Sun(self);

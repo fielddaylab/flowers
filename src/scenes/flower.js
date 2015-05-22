@@ -1,8 +1,8 @@
-var Seed = function()
+var Seed = function(x,y)
 {
   var self = this;
-  self.x = 0;
-  self.y = 0;
+  self.x = x;
+  self.y = y;
   self.w = 10;
   self.h = self.h;
   self.color = "#994411";
@@ -295,12 +295,16 @@ var Stigma = function(pistil)
     strokeCirc(canv,self.x+self.b_x+x,self.y+self.b_y+y,self.w/2);
     for(var i = 0; i < self.pollen.length; i++)
     {
+      var t = 1-(self.pollen_life[i]/100);
       self.pollen[i].drawAtOffset(canv,
-        self.x+self.b_x+((self.pollen_life[i]/100)*(pistil.ovary.x-self.x+self.b_x))+x,
-        self.y+self.b_y+((self.pollen_life[i]/100)*(pistil.ovary.y-self.y+self.b_y))+y
+        self.actualX()+(t*(pistil.ovary.actualX()-self.actualX())),
+        self.actualY()+(t*(pistil.ovary.actualY()-self.actualY()))
       );
     }
   }
+
+  self.actualX = function() { return pistil.actualX()+self.x+self.b_x; }
+  self.actualY = function() { return pistil.actualY()+self.y+self.b_y; }
 }
 var Ovary = function(pistil)
 {
@@ -347,8 +351,10 @@ var Ovary = function(pistil)
     for(var i = 0; i < self.ovules.length; i++)
       self.ovules[i].drawAtOffset(canv, self.x+self.b_x+x, self.y+self.b_y+y);
   }
-}
 
+  self.actualX = function() { return pistil.actualX()+self.x+self.b_x; }
+  self.actualY = function() { return pistil.actualY()+self.y+self.b_y; }
+}
 var Pistil = function(flower)
 {
   var self = this;
@@ -388,10 +394,7 @@ var Pistil = function(flower)
 
   self.genSeed = function()
   {
-    var s = new Seed();
-    s.x = flower.x+Math.random()*10-5;
-    s.y = flower.y+Math.random()*10-5;
-    flower.seeds.push(s);
+    flower.seeds.push(new Seed(flower.x+Math.random()*10-5,flower.y+Math.random()*10-5));
   }
 
   self.drawAtOffset = function(canv, x, y)
@@ -402,6 +405,9 @@ var Pistil = function(flower)
     self.ovary.drawAtOffset(canv, self.x+self.b_x+x, self.y+self.b_y+(self.h/2)+y);
     self.stigma.drawAtOffset(canv, self.x+self.b_x+x, self.y+self.b_y-(self.h/2)+y);
   }
+
+  self.actualX = function() { return flower.x+self.x+self.b_x; }
+  self.actualY = function() { return flower.y+self.y+self.b_y; }
 }
 
 var Flower = function(world, x,y)
@@ -472,14 +478,14 @@ var Flower = function(world, x,y)
       self.seeds[i].draw(canv);
   }
 
-  self.nevergambled = true;
+  self.freebee = false;
   self.gambleForPollen = function()
   {
     if(self.stamen.anther.pollen.length)
     {
-      if(self.nevergambled || Math.random() > 0.95)
+      if(self.freebee || Math.random() > 0.95)
       {
-        self.nevergambled = false;
+        self.freebee = false;
         var p = self.stamen.anther.pollen[self.stamen.anther.pollen.length-1];
         self.stamen.anther.pollen.splice(self.stamen.anther.pollen.length-1,1);
         return p;

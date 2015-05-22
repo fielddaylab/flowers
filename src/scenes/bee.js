@@ -226,7 +226,7 @@ var Hive = function(world,x,y)
   self.w = 80;
   self.h = self.w;
 
-  self.sugar = 5000;
+  self.sugar = 200;
   self.lastgen = 0;
 
   self.shouldGenBee = function()
