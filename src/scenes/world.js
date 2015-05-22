@@ -25,8 +25,7 @@ var World = function()
   self.ready = function(w, h)
   {
     self.flowers.push(new Flower(self,100,100));
-    for(var i = 0; i < 100; i++) self.bees.push(new Bee(self));
-    self.hives.push(new Hive(self));
+    self.hives.push(new Hive(self,300,150));
     self.wind = new Wind(self,0,0,w,h);
     self.sun = new Sun(self);
   };
@@ -52,6 +51,11 @@ var World = function()
         self.seeds.splice(i,1);
         i--;
       }
+    }
+    for(var i = 0; i < self.hives.length; i++)
+    {
+      while(self.hives[i].shouldGenBee())
+        self.bees.push(new Bee(self,self.hives[i].x,self.hives[i].y));
     }
   };
 

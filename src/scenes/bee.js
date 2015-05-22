@@ -1,9 +1,9 @@
-var Bee = function(world)
+var Bee = function(world,x,y)
 {
   var self = this;
 
-  self.x = 100;
-  self.y = 100;
+  self.x = x;
+  self.y = y;
   self.w = 6;
   self.h = self.w;
 
@@ -139,7 +139,7 @@ var Bee = function(world)
         self.blown();
         if(self.sugar <= 20)
         {
-          self.target_flower = world.flowerNearest(self,self.known_flowers,self.blacklist_flowers,20);
+          self.target_flower = world.flowerNearest(self,self.known_flowers,self.blacklist_flowers,40);
           self.mergeToList(self.known_flowers,self.target_flower);
           if(self.target_flower) self.state = BEE_STATE_TARGETING_FLOWER;
         }
@@ -196,24 +196,38 @@ var Bee = function(world)
   }
 }
 
-var Hive = function(world)
+var Hive = function(world,x,y)
 {
   var self = this;
 
-  self.x = 200;
-  self.y = 100;
-  self.w = 50;
-  self.h = 50;
+  self.x = x;
+  self.y = y;
+  self.w = 80;
+  self.h = self.w;
+
+  self.sugar = 1000;
+  self.lastgen = 0;
+
+  self.shouldGenBee = function()
+  {
+    if(self.sugar >= 50 && self.lastgen <= 0)
+    {
+      self.sugar -= 50;
+      self.lastgen = 10;
+      return true;
+    }
+    return false;
+  }
 
   self.tick = function()
   {
-
+    self.lastgen--;
   }
 
   self.draw = function(canv)
   {
     canv.context.strokeStyle = "#444400";
-    strokeRect(canv,self.x,self.y,self.w,self.h);
+    strokeCirc(canv,self.x,self.y,self.w/2);
   }
 }
 
