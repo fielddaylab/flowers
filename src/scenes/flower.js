@@ -463,12 +463,14 @@ var Flower = function(world, x,y)
       self.seeds[i].draw(canv);
   }
 
+  self.nevergambled = true;
   self.gambleForPollen = function()
   {
     if(self.stamen.anther.pollen.length)
     {
-      if(Math.random() > 0.95)
+      if(self.nevergambled || Math.random() > 0.95)
       {
+        self.nevergambled = false;
         var p = self.stamen.anther.pollen[self.stamen.anther.pollen.length-1];
         self.stamen.anther.pollen.splice(self.stamen.anther.pollen.length-1,1);
         return p;

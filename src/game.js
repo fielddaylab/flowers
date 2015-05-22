@@ -10,7 +10,7 @@ var Game = function(init)
   var self = this;
   doMapInitDefaults(init,init,default_init);
 
-  var stage = new Stage({width:init.width,height:init.height,container:init.container});
+  var stage = new Stage({width:init.width,height:init.height,container:init.container,smoothing:true});
   var scenes = [new NullScene(self, stage), new LoadingScene(self, stage), new GamePlayScene(self, stage)];
   var currentScene = 0;
 

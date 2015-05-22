@@ -131,7 +131,7 @@ var Bee = function(world,home,x,y)
       }
     }
 
-    self.sugar-=0.01;
+    self.sugar-=0.2;
     switch(self.state)
     {
       case BEE_STATE_IDLE:
@@ -226,14 +226,14 @@ var Hive = function(world,x,y)
   self.w = 80;
   self.h = self.w;
 
-  self.sugar = 1000;
+  self.sugar = 5000;
   self.lastgen = 0;
 
   self.shouldGenBee = function()
   {
-    if(self.sugar >= 50 && self.lastgen <= 0)
+    if(self.sugar >= 200 && self.lastgen <= 0)
     {
-      self.sugar -= 50;
+      self.sugar -= 200;
       self.lastgen = 10;
       return true;
     }
