@@ -7,8 +7,6 @@ var Seed = function()
   self.h = self.h;
   self.color = "#994411";
 
-  self.b_x *= 0.9;
-  self.b_y *= 0.9;
   self.blow_x = 0;
   self.blow_y = 0;
   self.lightness = 0.5+Math.random();
@@ -55,10 +53,6 @@ var Seed = function()
       case SEED_STATE_ON_GROUND:
         break;
     }
-    self.b_x += self.blow_x;
-    self.b_y += self.blow_y;
-    self.b_x *= 0.9;
-    self.b_y *= 0.9;
     self.blow_x = 0;
     self.blow_y = 0;
   }
@@ -66,7 +60,7 @@ var Seed = function()
   self.draw = function(canv)
   {
     canv.context.strokeStyle = self.color;
-    strokeCirc(canv,self.x+self.b_x+self.b_x,self.y+self.b_y+self.b_y,self.w/2);
+    strokeCirc(canv,self.x,self.y,self.w/2);
   }
 }
 
@@ -421,12 +415,11 @@ var Flower = function(world)
     self.pistil.blow(x,y);
     self.stamen.blow(x,y);
 
-    if(Math.abs(x)+Math.abs(y) > 2) //some arbitrarily big gust
+    if(Math.abs(x)+Math.abs(y) > 0.2) //some arbitrarily big gust
     {
       for(var i = 0; i < self.seeds.length; i++)
       {
-        self.seeds[i].blow_x = self.blow_x;
-        self.seeds[i].blow_y = self.blow_y;
+        self.seeds[i].blow(x,y);
         self.seeds[i].height = 5;
         world.seeds.push(self.seeds[i]);
         self.seeds.splice(i,1);
