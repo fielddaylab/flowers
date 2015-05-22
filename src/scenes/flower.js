@@ -14,17 +14,24 @@ var Seed = function()
   self.vx = 0;
   self.vy = 0;
   self.height = 0;
+  self.groundlife = 1000;
 
   var SEED_STATE_COUNT = 0;
-  var SEED_STATE_ON_FLOWER = SEED_STATE_COUNT; SEED_STATE_COUNT++;
-  var SEED_STATE_IN_AIR    = SEED_STATE_COUNT; SEED_STATE_COUNT++;
-  var SEED_STATE_ON_GROUND = SEED_STATE_COUNT; SEED_STATE_COUNT++;
+  var SEED_STATE_ON_FLOWER   = SEED_STATE_COUNT; SEED_STATE_COUNT++;
+  var SEED_STATE_IN_AIR      = SEED_STATE_COUNT; SEED_STATE_COUNT++;
+  var SEED_STATE_ON_GROUND   = SEED_STATE_COUNT; SEED_STATE_COUNT++;
+  var SEED_STATE_WANT_FLOWER = SEED_STATE_COUNT; SEED_STATE_COUNT++;
   self.state = SEED_STATE_ON_FLOWER;
 
   self.blow = function(x,y)
   {
     self.blow_x += x;
     self.blow_y += y;
+  }
+
+  self.shouldBecomeFlower = function()
+  {
+    return self.state == SEED_STATE_WANT_FLOWER;
   }
 
   self.tick = function()
@@ -51,6 +58,9 @@ var Seed = function()
           self.state = SEED_STATE_ON_GROUND;
         break;
       case SEED_STATE_ON_GROUND:
+        self.groundlife--;
+        if(self.groundlife <= 0)
+          self.state = SEED_STATE_WANT_FLOWER;
         break;
     }
     self.blow_x = 0;
@@ -385,14 +395,14 @@ var Pistil = function(flower)
   }
 }
 
-var Flower = function(world)
+var Flower = function(world, x,y)
 {
   var self = this;
   self.pistil = new Pistil(self);
   self.stamen = new Stamen(self);
 
-  self.x = 100;
-  self.y = 100;
+  self.x = x;
+  self.y = y;
   self.w = 50;
   self.h = self.w;
   self.color = "#FF0000";
