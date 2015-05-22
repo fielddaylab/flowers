@@ -14,7 +14,7 @@ var Seed = function()
   self.vx = 0;
   self.vy = 0;
   self.height = 0;
-  self.groundlife = 1000;
+  self.groundlife = Math.random()*500+500;
 
   var SEED_STATE_COUNT = 0;
   var SEED_STATE_ON_FLOWER   = SEED_STATE_COUNT; SEED_STATE_COUNT++;
@@ -51,6 +51,8 @@ var Seed = function()
         self.vy += (self.blow_y/10)*self.lightness;
         self.x += self.vx;
         self.y += self.vy;
+        if(self.x < 0) { self. x = 0; self.vx = -self.vx; }
+        if(self.y < 0) { self. y = 0; self.vy = -self.vy; }
         self.vx *= 0.9;
         self.vy *= 0.9;
         self.height -= 0.1;
@@ -67,10 +69,17 @@ var Seed = function()
     self.blow_y = 0;
   }
 
+  self.pulse = Math.random()*100;
   self.draw = function(canv)
   {
+    self.pulse++;
     canv.context.strokeStyle = self.color;
+    canv.context.fillStyle = self.color;
     strokeCirc(canv,self.x,self.y,self.w/2);
+    canv.context.fill();
+    if(self.pulse < 80)
+      strokeCirc(canv,self.x,self.y,self.w/2+Math.sqrt(self.pulse));
+    if(self.pulse > 100) self.pulse = 0;
   }
 }
 
@@ -425,7 +434,7 @@ var Flower = function(world, x,y)
     self.pistil.blow(x,y);
     self.stamen.blow(x,y);
 
-    if(Math.abs(x)+Math.abs(y) > 0.2) //some arbitrarily big gust
+    if(x*x+y*y > 0.3) //some arbitrarily big gust
     {
       for(var i = 0; i < self.seeds.length; i++)
       {

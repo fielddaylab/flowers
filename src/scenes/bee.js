@@ -90,7 +90,7 @@ var Bee = function(world,home,x,y)
   self.blacklistFlower = function(flower)
   {
     self.blacklist_flowers.push(flower);
-    self.blacklist_flowers_life.push(1000);
+    self.blacklist_flowers_life.push(Math.random()*500+500);
   }
   self.blacklistHive = function(hive)
   {

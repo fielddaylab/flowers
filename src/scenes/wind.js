@@ -42,7 +42,9 @@ var Gust = function()
 
   self.draw = function(canv)
   {
-    canv.context.strokeStyle = "#000000";
+    var l = canv.context.lineWidth;
+    canv.context.lineWidth = 0.5;
+    canv.context.strokeStyle = "rgba(100,200,255,"+(self.strength/100)+")";
     canv.context.beginPath();
     canv.context.moveTo(self.pts[0][0],self.pts[0][1]);
     for(var i = 1; i < self.pts.length; i++)
@@ -50,6 +52,7 @@ var Gust = function()
       canv.context.lineTo(self.pts[i][0],self.pts[i][1]);
     }
     canv.context.stroke();
+    canv.context.lineWidth = l;
   }
 }
 

@@ -11,6 +11,46 @@ var Sun = function(world)
   }
 }
 
+var Grass = function(world, x, y)
+{
+  var self = this;
+
+  self.x = x;
+  self.y = y;
+
+  self.ex = ((Math.random()*2)-1)*5+self.x
+  self.ey = self.y-10-Math.random()*5;
+
+  self.b_x = 0;
+  self.b_y = 0;
+  self.blow_x = 0;
+  self.blow_y = 0;
+
+  self.blow = function(x,y)
+  {
+    x /= 3;
+    y /= 3;
+    self.blow_x += x;
+    self.blow_y += y;
+  }
+
+  self.tick = function()
+  {
+    self.b_x += self.blow_x;
+    self.b_y += self.blow_y;
+    self.b_x *= 0.9;
+    self.b_y *= 0.9;
+    self.blow_x = 0;
+    self.blow_y = 0;
+  }
+
+  self.draw = function(canv)
+  {
+    canv.context.strokeStyle = "#AAFFAA";
+    strokeLine(canv,self.x,self.y,self.ex+self.b_x,self.ey+self.b_y);
+  }
+}
+
 var World = function()
 {
   var self = this;
@@ -19,6 +59,7 @@ var World = function()
   self.bees = [];
   self.hives = [];
   self.seeds = [];
+  self.grass = [];
   self.wind;
   self.sun;
 
@@ -28,6 +69,7 @@ var World = function()
     self.hives.push(new Hive(self,300,150));
     self.wind = new Wind(self,0,0,w,h);
     self.sun = new Sun(self);
+    for(var i = 0; i < 1000; i++) self.grass.push(new Grass(self,Math.random()*w,Math.random()*h));
   };
 
   self.tick = function()
@@ -37,11 +79,13 @@ var World = function()
     for(var i = 0; i < self.flowers.length; i++) self.wind.blow(self.flowers[i]);
     for(var i = 0; i < self.bees.length;    i++) self.wind.blow(self.bees[i]);
     for(var i = 0; i < self.seeds.length;   i++) self.wind.blow(self.seeds[i]);
+    for(var i = 0; i < self.grass.length;   i++) self.wind.blow(self.grass[i]);
 
     for(var i = 0; i < self.hives.length;   i++) self.hives[i].tick();
     for(var i = 0; i < self.flowers.length; i++) self.flowers[i].tick();
     for(var i = 0; i < self.bees.length;    i++) self.bees[i].tick();
     for(var i = 0; i < self.seeds.length;   i++) self.seeds[i].tick();
+    for(var i = 0; i < self.grass.length;   i++) self.grass[i].tick();
 
     for(var i = 0; i < self.seeds.length; i++)
     {
@@ -61,11 +105,12 @@ var World = function()
 
   self.draw = function(canv)
   {
-    self.wind.draw(canv);
+    for(var i = 0; i < self.grass.length;   i++) self.grass[i].draw(canv);
     for(var i = 0; i < self.hives.length;   i++) self.hives[i].draw(canv);
     for(var i = 0; i < self.flowers.length; i++) self.flowers[i].draw(canv);
     for(var i = 0; i < self.bees.length;    i++) self.bees[i].draw(canv);
     for(var i = 0; i < self.seeds.length;   i++) self.seeds[i].draw(canv);
+    self.wind.draw(canv);
   };
 
   var x;
