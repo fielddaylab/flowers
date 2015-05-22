@@ -55,7 +55,7 @@ var World = function()
     for(var i = 0; i < self.hives.length; i++)
     {
       while(self.hives[i].shouldGenBee())
-        self.bees.push(new Bee(self,self.hives[i].x,self.hives[i].y));
+        self.bees.push(new Bee(self,self.hives[i],self.hives[i].x,self.hives[i].y));
     }
   };
 

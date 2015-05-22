@@ -412,7 +412,7 @@ var Flower = function(world, x,y)
   self.blow_x = 0;
   self.blow_y = 0;
 
-  self.sugar = 0;
+  self.sugar = 1000;
   self.sunlight = 0;
   self.seeds = [];
 
@@ -440,6 +440,7 @@ var Flower = function(world, x,y)
 
   self.tick = function()
   {
+    self.sugar++;
     self.pistil.tick();
     self.stamen.tick();
     for(var i = 0; i < self.seeds.length; i++)

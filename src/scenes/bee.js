@@ -1,4 +1,4 @@
-var Bee = function(world,x,y)
+var Bee = function(world,home,x,y)
 {
   var self = this;
 
@@ -16,7 +16,7 @@ var Bee = function(world,x,y)
   self.target_flower;
   self.target_hive;
   self.known_flowers = [];
-  self.known_hives = [];
+  self.known_hives = [home];
   self.blacklist_flowers = [];
   self.blacklist_flowers_life = [];
   self.blacklist_hives = [];
@@ -27,7 +27,7 @@ var Bee = function(world,x,y)
   var BEE_STATE_TARGETING_FLOWER = BEE_STATE_COUNT; BEE_STATE_COUNT++;
   var BEE_STATE_EATING           = BEE_STATE_COUNT; BEE_STATE_COUNT++;
   var BEE_STATE_TARGETING_HIVE   = BEE_STATE_COUNT; BEE_STATE_COUNT++;
-  var BEE_STATE_SLEEPING         = BEE_STATE_COUNT; BEE_STATE_COUNT++;
+  var BEE_STATE_DEPOSITING       = BEE_STATE_COUNT; BEE_STATE_COUNT++;
   self.state = BEE_STATE_IDLE;
 
   self.jiggle = function()
@@ -143,6 +143,12 @@ var Bee = function(world,x,y)
           self.mergeToList(self.known_flowers,self.target_flower);
           if(self.target_flower) self.state = BEE_STATE_TARGETING_FLOWER;
         }
+        if(self.sugar >= 100)
+        {
+          self.target_hive = world.hiveNearest(self,self.known_hives,self.blacklist_hives,40);
+          self.mergeToList(self.known_hives,self.target_hive);
+          if(self.target_hive) self.state = BEE_STATE_TARGETING_HIVE;
+        }
         break;
       case BEE_STATE_TARGETING_FLOWER:
         self.buzzTo(self.target_flower);
@@ -160,7 +166,7 @@ var Bee = function(world,x,y)
         {
           self.sugar++;
           self.target_flower.sugar--;
-          if(self.sugar >= 100)
+          if(self.sugar > 200)
           {
             self.state = BEE_STATE_IDLE;
             self.doTheDirtyDance();
@@ -177,8 +183,23 @@ var Bee = function(world,x,y)
         self.buzzTo(self.target_hive);
         self.jiggle();
         self.blown();
+        if(self.distTo(self.target_hive) < 25)
+        {
+          self.x = self.target_hive.x;
+          self.y = self.target_hive.y;
+          self.state = BEE_STATE_DEPOSITING;
+        }
         break;
-      case BEE_STATE_SLEEPING:
+      case BEE_STATE_DEPOSITING:
+        if(self.sugar > 20)
+        {
+          self.sugar--;
+          self.target_hive.sugar++;
+        }
+        else
+        {
+          self.state = BEE_STATE_IDLE;
+        }
         break;
       default: break;
     }
