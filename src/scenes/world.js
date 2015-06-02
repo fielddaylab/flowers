@@ -147,7 +147,7 @@ var World = function()
     self.wind = new Wind(self,0,0,w,h);
     self.sun = new Sun(self);
     for(var i = 0; i < 1000; i++) self.grass.push(new Grass(self,Math.random()*w,Math.random()*h));
-    self.clouds.push(new Cloud(self, 100,100,150,50));
+    //self.clouds.push(new Cloud(self, 100,100,150,50));
   };
 
   self.tick = function()
@@ -185,7 +185,7 @@ var World = function()
 
   self.draw = function(canv)
   {
-    canv.context.fillStyle = "#AAEEAA";
+    canv.context.fillStyle = "#99DD99";
     canv.context.fillRect(0,0,canv.canvas.width,canv.canvas.height);
     for(var i = 0; i < self.grass.length;   i++) self.grass[i].draw(canv);
     for(var i = 0; i < self.hives.length;   i++) self.hives[i].draw(canv);
